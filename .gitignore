@@ -1,0 +1,5 @@
+.idea/
+__pycache__/
+logs.txt
+mess/
+information_for_deployment.txt

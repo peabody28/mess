@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="static/signup.css" type="text/css">
+    <title>Зарегистрироваться</title>
+</head>
+<body>
+    <div class="form_signup">
+
+        <div id="message">
+            {% if message %}
+                <p><h3>{{ message }}</h3></p>
+            {% endif %}
+        </div>
+
+
+    	<form action="" method="POST">
+			<div class="up">
+				<div class="name">
+					<div class="label_name"><label for="username">Имя</label></div>
+					<div class="input_name"><input type="text" name="username"></div>
+				</div>
+				<br>
+
+				<div class="email">
+					<div class="label_email"><label for="username">E-mail</label></div>
+					<div class="input_email"><input type="text" name="email"></div>
+				</div>
+				<br>
+
+				<div class="pass">
+					<div class="label_pass"><label for="username">Пароль</label></div>
+					<div class="input_pass"><input type="password" name="password"></div>
+				</div>
+			</div>
+
+			<br>
+
+	    	<div id="button"><button id="bt">Зарегистрироваться</button></div>
+    	</form>
+        <a id="l" href="{{ url_for('login')}}">Войти</a>
+	</div>
+</body>
+</html>

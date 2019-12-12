@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>MessFree</title>
+        <script type=text/javascript src="static/js/jquery-3.4.1.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+        <script>
+            $(document).ready(function () {
+                em();
+            })
+        </script>
+    </head>
+    <body>
+        <div class="header">
+            <div id="mess">MessFree</div>
+            <div class="login"><h5><a href="{{ url_for('exit')}} ">Выйти</a></h5></div>
+            <div class="uspg"><a id="user_page" href="{{ url_for('user_page') }}">Аккаунт</a></div>
+        </div>
+
+        <div class="wrapper">
+            <div class="title">Общий чат</div>
+
+            <div class="content">
+                <div class="messenger_window">
+                    <div class="messages">
+                        <div id="messages" style="white-space:pre"></div>
+                        <div id="time"></div>
+                    </div>
+                    <button id="to_down" onclick="to_down();">Вниз</button>
+                    <br/>
+                    <br/>
+                    <div id="err_message"></div>
+                    <div class="lol">
+                        <form id="form" action="/m" method="post" role="form" >
+                            <input id="inp" type="text" name="text">
+                            <input id="in_but" type="button" value="Отправить">
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="footer">
+            <div id="by">Разработчик: Горбачевский Максим</div>
+        </div>
+        <script type="text/javascript" src="static/js/to_down.js"></script>
+        <script type="text/javascript" src="static/js/enter_form.js"></script>
+        <script type="text/javascript" src="static/js/em.js"></script>
+        <link rel="stylesheet" href="static/messenger.css" type="text/css">
+    </body>
+
+</html>

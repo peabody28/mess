@@ -1,0 +1,127 @@
+
+@font-face {
+    font-family: "YanoneKaffeesatz";
+    src: url("/static/fonts/YanoneKaffeesatz-Regular.ttf") ;
+    font-style: normal;
+    font-weight: normal;
+}
+
+body
+{
+
+    font-family: "YanoneKaffeesatz", sans-serif;
+    font-size: 24px;
+    height: 800px;
+    margin:0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#message
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.form_login
+{
+    padding: 20px;
+    height: 350px;
+    width: 300px;
+    border-radius: 10px;
+    background: #669999;
+}
+
+.up
+{
+    width: 300px;
+}
+.name
+{
+    height: 50px;
+}
+
+.label_name
+{
+    height: 50px;
+    float: left;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.input_name
+{
+    height: 50px;
+    float: right;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.label_pass
+{
+    height: 50px;
+    float: left;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.input_pass
+{
+    height: 50px;
+    float: right;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pass
+{
+    height: 50px;
+}
+
+#button
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#aha
+{
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+a:visited
+{
+  color: #FFFFFF;
+  text-decoration: none;
+}
+
+a:link
+{
+  color: #FFFFFF;
+  text-decoration: none;
+}
+
+#bt
+{
+    height: 25px;
+    width: 75px;
+    border-radius: 2px;
+    border: none;
+    background-color: #ffffff;
+    color: #2a5499;
+}
+
+#bt:hover
+{
+    text-decoration: underline;
+}

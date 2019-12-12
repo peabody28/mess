@@ -1,0 +1,169 @@
+
+@font-face {
+    font-family: "YanoneKaffeesatz";
+    src: url("/static/fonts/YanoneKaffeesatz-Regular.ttf") ;
+    font-style: normal;
+    font-weight: normal;
+}
+
+body
+{
+
+    font-family: "YanoneKaffeesatz", sans-serif;
+    width: 100%;
+    margin:0;
+    font-size: 24px;
+}
+
+.header
+{
+    height: 100px;
+    width: 100%;
+    background-color:  #999999;
+    font-size: 40px;
+}
+
+.login
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 200px;
+    float: right;
+    background-color: #666666;
+}
+
+.uspg
+{
+    margin-right: 50px;
+    height: 100%;
+    width: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    float: right;
+}
+
+#mess
+{
+    font-weight: 600;
+    margin-left: 50px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    float: left;
+}
+
+a:visited
+{
+  color: #FFFFFF;
+  text-decoration: none;
+}
+
+a:link
+{
+  color: #FFFFFF;
+  text-decoration: none;
+}
+
+.wrapper
+{
+    padding-top: 30px;
+}
+
+.title
+{
+    width: 100%;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 32px;
+}
+
+.content
+{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.messenger_window
+{
+    word-break:break-all;
+    padding: 20px;
+    border-radius: 10px;
+    width: 800px;
+    background: #669999;
+}
+
+.messages
+{
+    height: 600px;
+    width: 100%;
+    overflow-y: scroll;
+    background-color: cadetblue;
+}
+
+#messages
+{
+    float: left;
+    padding:10px ;
+}
+
+#time{
+    float: left;
+}
+
+.lol
+{
+    height: 50px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+span
+{
+    opacity: .3;
+}
+
+#inp
+{
+    border: 0;
+    border-radius: 5px;
+    width: 500px;
+}
+
+#in_but
+{
+    background: #666666;
+    border: 0;
+    border-radius: 5px;
+    color: #FFFFFF;
+}
+
+
+#to_down
+{
+    float: right;
+    border: none;
+}
+
+#err_message
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.footer{
+    height: 50px;
+    background-color: #666666;
+    margin-top: 100px;
+    padding-left: 50px;
+    padding-top: 50px;
+}

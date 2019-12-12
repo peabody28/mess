@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>change my password</title>
+    <link rel="stylesheet" href="static/change_pass.css" type="text/css">
+    <script type=text/javascript src="/static/js/jquery-3.4.1.js"></script>
+</head>
+<body>
+    <div class="header">
+        <div id="mess"><a id="a_mess" href="{{ url_for('messenger') }}">MessFree</a></div>
+        <div class="login"><h5><a href="{{ url_for('exit')}} ">Выйти</a></h5></div>
+        <div class="uspg"><a id="user_page" href="{{ url_for('user_page') }}">Аккаунт</a></div>
+    </div>
+
+    <div class="content">
+    	<form action="/cp" method="POST" role="form">
+            <label for="password">Пароль</label>&nbsp;&nbsp;
+            <input type="text" name="password">
+            <br>
+            <br>
+            <div id="button"><input type="button" value="Изменить" onclick="get_pass();"></div>
+        </form>
+        <br/>
+        <br/>
+        <div id="message"></div>
+    </div>
+    <script src="static/js/get_pass.js"></script>
+    <script>
+        $('input').keydown(function(e) {
+            if(e.keyCode === 13) {
+                event.preventDefault();//убрал стандартную обработку enter-a
+                get_pass()
+            }
+        });
+    </script>
+</body>
+</html>
