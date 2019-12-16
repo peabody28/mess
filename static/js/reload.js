@@ -54,3 +54,4 @@ function reload() {
 
 }
 let timerId;
+timerId = setInterval(() => reload(), 1000);

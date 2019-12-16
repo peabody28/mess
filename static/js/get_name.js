@@ -6,8 +6,8 @@ function get_name() {
         success: function(response) {
             let json = $.parseJSON(response);
             if (json.status === "OK"){
-                let s = "successfully, new name:  "+json.name;
-                $('#message').html(s)
+                var url = "/userpage";
+                $(location).attr('href',url);
             }
             else{
                 $('#message').html(json.message)

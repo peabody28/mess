@@ -24,15 +24,18 @@
             <div class="content">
                 <div class="messenger_window">
                     <div class="messages">
-                        <div id="messages" style="white-space:pre"></div>
-                        <div id="time"></div>
+                        <div id="messages">
+                            {% for mes in messages %}
+                                {{ mes["name"] }}:&nbsp;&nbsp;{{ mes["mes"] }}&nbsp;&nbsp;&nbsp;&nbsp;<span>{{ mes["time"] }}</span><br>
+                            {% endfor %}
+                        </div>
                     </div>
                     <button id="to_down" onclick="to_down();">Вниз</button>
                     <br/>
                     <br/>
                     <div id="err_message"></div>
                     <div class="lol">
-                        <form id="form" action="/m" method="post" role="form" >
+                        <form id="form" method="post" role="form" >
                             <input id="inp" type="text" name="text">
                             <input id="in_but" type="button" value="Отправить">
                         </form>
@@ -45,7 +48,6 @@
             <div id="by">Разработчик: Горбачевский Максим</div>
         </div>
         <script type="text/javascript" src="static/js/to_down.js"></script>
-        <script type="text/javascript" src="static/js/enter_form.js"></script>
         <script type="text/javascript" src="static/js/em.js"></script>
         <link rel="stylesheet" href="static/messenger.css" type="text/css">
     </body>

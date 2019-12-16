@@ -7,8 +7,8 @@ function get_email() {
         success: function(response) {
             let json = $.parseJSON(response);
             if (json.status === "OK"){
-                let s = "successfully, new email:  "+json.eml;
-                $('#message').html(s)
+                var url = "/userpage";
+                $(location).attr('href',url);
             }
             else{
                 $('#message').html(json.message)

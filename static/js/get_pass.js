@@ -6,8 +6,8 @@ function get_pass() {
         success: function(response) {
             let json = $.parseJSON(response);
             if (json.status === "OK"){
-                let s = "successfully, new password:  "+json.pass;
-                $('#message').html(s)
+                var url = "/userpage";
+                $(location).attr('href',url);
             }
             else{
                 $('#message').html(json.message)

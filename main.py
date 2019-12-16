@@ -7,9 +7,7 @@ import cryptography
 
 app = Flask(__name__)
 socketio = SocketIO(app)
-
-
-usernm = "5"
+app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 
 
 @app.route("/signup", methods=['POST', 'GET'])
@@ -18,11 +16,14 @@ def signup():
     message = ""
 
     if request.method == 'POST':
+
         username = request.form.get('username')
         email = request.form.get('email')
         password = request.form.get('password')
+
         if username and password and email:
             search_pair_answer = search_pair(username, email)
+
             if not(search_pair_answer[0]) and not(search_pair_answer[1]):
                 if "@" in email:
 
@@ -33,8 +34,6 @@ def signup():
                         f.write(text + (50-len(text))*" "+time.ctime()[4:]+"\n")
                         f.close()
                         return redirect(url_for('messenger'))
-                    else:
-                        print("Код внутри add_user не сработал")
                 else:
                     message = "Некорректный email"
             else:
@@ -136,51 +135,34 @@ def main():
 def messenger():
 
     if "username" in session:
-        return render_template('messenger.html')
+        mes = []
+        connection = pymysql.connect("127.0.0.1", "root", "1234", "messages")
+        try:
+            with connection:
+                cursor = connection.cursor()
+                sql = "SELECT id FROM message"
+                id = cursor.execute(sql)
+
+                for i in range(id):
+                    sql = "SELECT message FROM message WHERE id=%s"
+                    cursor.execute(sql, i + 1)
+                    message = cursor.fetchone()
+
+                    sql = "SELECT tag FROM message WHERE id=%s"
+                    cursor.execute(sql, i + 1)
+                    tag = cursor.fetchone()
+
+                    sql = "SELECT time FROM message WHERE id=%s"
+                    cursor.execute(sql, i + 1)
+                    time = cursor.fetchone()
+
+                    mes.append({"name": tag[0],
+                                "mes": message[0],
+                                "time": time[0]})
+        finally:
+            connection.close()
+        return render_template('messenger.html', messages=mes)
     return redirect(url_for('login'))
-
-
-@app.route("/m",  methods=['GET', 'POST'])
-def m():
-
-    messages = []
-    message = request.form['text']
-    if message:
-        add_message(message)
-        messages = cast()
-    return messages
-
-
-@app.route("/cast", methods=['GET'])
-def cast():
-
-    array = []
-    connection = pymysql.connect("127.0.0.1", "root", "1234", "messages")
-    try:
-        with connection:
-            cursor = connection.cursor()
-            sql = "SELECT id FROM message"
-            id = cursor.execute(sql)
-
-            for i in range(id):
-                sql = "SELECT message FROM message WHERE id=%s"
-                cursor.execute(sql, i + 1)
-                message = cursor.fetchone()
-
-                sql = "SELECT tag FROM message WHERE id=%s"
-                cursor.execute(sql, i + 1)
-                tag = cursor.fetchone()
-
-                sql = "SELECT time FROM message WHERE id=%s"
-                cursor.execute(sql, i + 1)
-                time = cursor.fetchone()
-
-                array.append({"tag": tag[0],
-                              "mess": message[0],
-                              "time": time[0]})
-    finally:
-        connection.close()
-    return json.dumps({'status': "OK", 'data': array})
 
 
 @app.route("/userpage")
@@ -234,7 +216,6 @@ def change_name():
     return redirect(url_for('login'))
 
 
-@socketio.on('cn')
 @app.route("/cn", methods=['POST', 'GET'])
 def cn():
 
@@ -271,6 +252,17 @@ def cn():
             text = past_name + " CHANGED THE NAME TO " + new_name
             f.write(text + (50 - len(text)) * " " + time.ctime()[4:] + "\n")
             f.close()
+
+            mes = {"mes": text, "name": "system", "time": time.ctime()[10:16]}
+            connection = pymysql.connect("127.0.0.1", "root", "1234", "messages")
+            try:
+                with connection.cursor() as cursor:
+                    sql = "INSERT INTO message (id, tag, message, time) VALUES (NULL, %s, %s, %s)"
+                    cursor.execute(sql, (mes['name'], mes['mes'], mes['time']))
+                    connection.commit()
+
+            finally:
+                connection.close()
             
             return json.dumps({"status": "OK", "name": new_name})
         else:
@@ -356,13 +348,22 @@ def cp():
         return json.dumps({"status": "error", 'message': "Введи пароль"})
 
 
-@socketio.on('Slider value changed')
+@socketio.on('add_mess')
 def value_changed(m):
     mes = {"mes": m['data'][5:], "name": session['username'], "time": time.ctime()[10:16]}
-    emit('update value', mes, broadcast=True)
+    connection = pymysql.connect("127.0.0.1", "root", "1234", "messages")
+    try:
+        with connection.cursor() as cursor:
+            sql = "INSERT INTO message (id, tag, message, time) VALUES (NULL, %s, %s, %s)"
+            cursor.execute(sql, (mes['name'], mes['mes'], mes['time']))
+            connection.commit()
+
+    finally:
+        connection.close()
+    emit('update', mes, broadcast=True)
 
 
 if __name__ == "__main__":
     socketio.run(app)
 # IT'S NOT A BUG IT'S A FEATURE
-app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
+
