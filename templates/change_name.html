@@ -19,18 +19,18 @@
             <input type="text" name="username">
             <br>
             <br>
-            <div id="button"><input type="button" value="Изменить" onclick="get_name();"></div>
+            <div id="button"><input type="button" value="Изменить" onclick="change_name();"></div>
         </form>
         <br>
         <br>
         <div id="message"></div>
     </div>
-    <script src="static/js/get_name.js"></script>
+    <script src="static/js/change_name.js"></script>
     <script>
         $('input').keydown(function(e) {
             if(e.keyCode === 13) {
-                event.preventDefault();//убрал стандартную обработку enter-a
-                get_name()
+                e.preventDefault();//убрал стандартную обработку enter-a
+                change_name()
             }
         });
     </script>

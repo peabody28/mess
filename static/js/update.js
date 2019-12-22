@@ -1,5 +1,5 @@
-function em(){
-    var socket = io.connect('http://127.0.0.1:5000');
+function update(){
+    let socket = io.connect('http://127.0.0.1:5000');//запуск прослушки порта
 
     $('#in_but').on("click", function(event) {
         if ($('#inp').val() !== ""){
@@ -26,7 +26,7 @@ function em(){
         }
     });
     socket.on('update', function(msg) {
-        let mes = msg["name"]+":&nbsp;&nbsp;"+msg["mes"]+"&nbsp;&nbsp;&nbsp;&nbsp;"+"<span>"+msg["time"]+"</span>"+"<br>";
-        $('#messages').append(mes);
+        let mes = msg["name"]+":&nbsp;&nbsp;&nbsp;&nbsp;"+msg["mes"]+"&nbsp;&nbsp;&nbsp;&nbsp;"+"<span>"+msg["time"]+"</span>"+"<br>";
+        $('.messages').append(mes);
     });
 }

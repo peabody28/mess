@@ -1,7 +1,7 @@
-function get_pass() {
+function change_email() {
     $.ajax({
         type: "POST",
-        url: "/cp",
+        url: "/ce",
         data: $('form').serialize(),
         success: function(response) {
             let json = $.parseJSON(response);
@@ -12,6 +12,7 @@ function get_pass() {
             else{
                 $('#message').html(json.message)
             }
+
         },
         error: function(error) {
             console.log(error);

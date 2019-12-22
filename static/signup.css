@@ -23,6 +23,7 @@ body
     display: flex;
     align-items: center;
     justify-content: center;
+    color: #a12300;
 }
 
 .form_signup
@@ -145,4 +146,17 @@ a:link
 #bt:hover
 {
     text-decoration: underline;
+}
+
+input
+{
+    height: 25px;
+}
+
+.err
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
 }

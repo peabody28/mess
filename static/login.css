@@ -23,7 +23,9 @@ body
     display: flex;
     align-items: center;
     justify-content: center;
+    color: #a12300;
 }
+
 
 .form_login
 {
@@ -34,10 +36,13 @@ body
     background: #669999;
 }
 
+
 .up
 {
     width: 300px;
 }
+
+
 .name
 {
     height: 50px;
@@ -84,6 +89,7 @@ body
     height: 50px;
 }
 
+
 #button
 {
     display: flex;
@@ -91,13 +97,14 @@ body
     justify-content: center;
 }
 
+
 #aha
 {
-    margin-top: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
 }
+
 
 a:visited
 {
@@ -105,11 +112,13 @@ a:visited
   text-decoration: none;
 }
 
+
 a:link
 {
   color: #FFFFFF;
   text-decoration: none;
 }
+
 
 #bt
 {
@@ -121,7 +130,22 @@ a:link
     color: #2a5499;
 }
 
+
 #bt:hover
 {
     text-decoration: underline;
+}
+
+
+input
+{
+    height: 25px;
+}
+
+.err
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
 }

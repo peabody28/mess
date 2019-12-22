@@ -123,11 +123,41 @@ def check(username, password):
     return answer
 
 
+def get_mes():
+    mes = []
+    connection = pymysql.connect("127.0.0.1", "root", "1234", "messages")
+    try:
+        with connection:
+            cursor = connection.cursor()
+            sql = "SELECT id FROM message"
+            id = cursor.execute(sql)
+
+            for i in range(id):
+                sql = "SELECT message FROM message WHERE id=%s"
+                cursor.execute(sql, i + 1)
+                message = cursor.fetchone()
+
+                sql = "SELECT tag FROM message WHERE id=%s"
+                cursor.execute(sql, i + 1)
+                tag = cursor.fetchone()
+
+                sql = "SELECT time FROM message WHERE id=%s"
+                cursor.execute(sql, i + 1)
+                time = cursor.fetchone()
+
+                mes.append({"name": tag[0],
+                            "mes": message[0],
+                            "time": time[0]})
+    finally:
+        connection.close()
+        return mes
+
+
 @app.route("/")
 def main():
 
     if "username" in session:
-        return render_template("main_temp.html")
+        return render_template("messenger.html", messages=get_mes())
     return redirect(url_for('login'))
 
 
@@ -135,33 +165,7 @@ def main():
 def messenger():
 
     if "username" in session:
-        mes = []
-        connection = pymysql.connect("127.0.0.1", "root", "1234", "messages")
-        try:
-            with connection:
-                cursor = connection.cursor()
-                sql = "SELECT id FROM message"
-                id = cursor.execute(sql)
-
-                for i in range(id):
-                    sql = "SELECT message FROM message WHERE id=%s"
-                    cursor.execute(sql, i + 1)
-                    message = cursor.fetchone()
-
-                    sql = "SELECT tag FROM message WHERE id=%s"
-                    cursor.execute(sql, i + 1)
-                    tag = cursor.fetchone()
-
-                    sql = "SELECT time FROM message WHERE id=%s"
-                    cursor.execute(sql, i + 1)
-                    time = cursor.fetchone()
-
-                    mes.append({"name": tag[0],
-                                "mes": message[0],
-                                "time": time[0]})
-        finally:
-            connection.close()
-        return render_template('messenger.html', messages=mes)
+        return render_template('messenger.html', messages=get_mes())
     return redirect(url_for('login'))
 
 
@@ -218,9 +222,9 @@ def change_name():
 
 @app.route("/cn", methods=['POST', 'GET'])
 def cn():
-
+    new_name = request.form.get("username")
     past_name = session["username"]
-    new_name = request.form.get('username')
+
     if new_name:
         spa = search_pair(new_name, None)
         if not(spa[0]):
@@ -366,4 +370,3 @@ def value_changed(m):
 if __name__ == "__main__":
     socketio.run(app)
 # IT'S NOT A BUG IT'S A FEATURE
-

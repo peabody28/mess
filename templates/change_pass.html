@@ -19,18 +19,18 @@
             <input type="text" name="password">
             <br>
             <br>
-            <div id="button"><input type="button" value="Изменить" onclick="get_pass();"></div>
+            <div id="button"><input type="button" value="Изменить" onclick="change_pass();"></div>
         </form>
         <br/>
         <br/>
         <div id="message"></div>
     </div>
-    <script src="static/js/get_pass.js"></script>
+    <script src="static/js/change_pass.js"></script>
     <script>
         $('input').keydown(function(e) {
             if(e.keyCode === 13) {
-                event.preventDefault();//убрал стандартную обработку enter-a
-                get_pass()
+                e.preventDefault();//убрал стандартную обработку enter-a
+                change_pass()
             }
         });
     </script>

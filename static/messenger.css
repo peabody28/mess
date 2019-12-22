@@ -119,7 +119,7 @@ a:link
 
 span
 {
-    opacity: .3;
+    opacity: .4;
 }
 
 #inp
@@ -144,11 +144,19 @@ span
     border: none;
 }
 
+#to_down:hover
+{
+    background-color: #2a5499;
+}
+
+
 #err_message
 {
+    height: 50px;
     display: flex;
     align-items: center;
     justify-content: center;
+    color: #a12300;
 }
 
 .footer{

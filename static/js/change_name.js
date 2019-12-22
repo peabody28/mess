@@ -1,8 +1,8 @@
-function get_name() {
+function change_name() {
     $.ajax({
         type: "POST",
         url: "/cn",
-        data: $('form').serialize(),
+        data: $('form').serialize(),//передаю данные формы в функцию cn
         success: function(response) {
             let json = $.parseJSON(response);
             if (json.status === "OK"){

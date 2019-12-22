@@ -7,7 +7,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
         <script>
             $(document).ready(function () {
-                em();
+                update();
             })
         </script>
     </head>
@@ -24,15 +24,15 @@
             <div class="content">
                 <div class="messenger_window">
                     <div class="messages">
-                        <div id="messages">
-                            {% for mes in messages %}
-                                {{ mes["name"] }}:&nbsp;&nbsp;{{ mes["mes"] }}&nbsp;&nbsp;&nbsp;&nbsp;<span>{{ mes["time"] }}</span><br>
-                            {% endfor %}
-                        </div>
+                        {% for mes in messages %}
+                            {% if mes["name"]=="system" %}
+                                &nbsp;&nbsp;<i>{{ mes["name"] }}:&nbsp;&nbsp;&nbsp;&nbsp;{{ mes["mes"] }}&nbsp;&nbsp;&nbsp;&nbsp;</i><span>{{ mes["time"] }}</span><br>
+                            {% else %}
+                                {{ mes["name"] }}:&nbsp;&nbsp;&nbsp;&nbsp;{{ mes["mes"] }}&nbsp;&nbsp;&nbsp;&nbsp;<span>{{ mes["time"] }}</span><br>
+                            {% endif %}
+                        {% endfor %}
                     </div>
                     <button id="to_down" onclick="to_down();">Вниз</button>
-                    <br/>
-                    <br/>
                     <div id="err_message"></div>
                     <div class="lol">
                         <form id="form" method="post" role="form" >
