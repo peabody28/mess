@@ -1,0 +1,11 @@
+1.Установить mysql на ПК (name:root  pass:1234) https://info-comp.ru/sisadminst/448-installing-mysql-5-6-23-windows-7.html
+2.pip install flask && pip install pymysql && pip install cryptography
+3.создать 2 базы данных:
+    CREATE DATABASE users_list;
+        CREATE TABLE users (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, name CHAR(25), email CHAR(25), passwd CHAR(25));
+
+    CREATE DATABASE messages;
+        CREATE TABLE message (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, message MEDIUMTEXT, tag CHAR(25), time CHAR(6));
+4. Запустить приложение
+
+5. можешь закоментить reload.js в messenger.html если боишься

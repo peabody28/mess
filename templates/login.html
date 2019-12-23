@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="static/login.css" type="text/css">
+    <script type=text/javascript src="/static/js/jquery-3.4.1.js"></script>
     <title>Вход</title>
 </head>
 <body>
 
 	<div class="form_login">
 
-    	<form id="forma" action="" method="POST">
+    	<form id="form" action="" method="POST">
 			<div class="up">
 				<div class="name">
 					<div class="label_name"><label for="username">Имя</label></div>
@@ -26,15 +27,11 @@
 
             <div id="button"><button id="bt">Войти</button></div>
             <div class="err">
-                <div id="message">
-                    {% if message %}
-                        <p><h3>{{ message }}</h3></p>
-                    {% endif %}
-                </div>
+                <div id="message"></div>
             </div>
 			<div id="aha"><a href="{{ url_for('signup')}} ">Зарегистрироваться</a></div>
     	</form>
 	</div>
-
+    <script src="static/js/login.js"></script>
 </body>
 </html>

@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="static/signup.css" type="text/css">
+    <script type=text/javascript src="/static/js/jquery-3.4.1.js"></script>
     <title>Зарегистрироваться</title>
 </head>
 <body>
     <div class="form_signup">
-
-    	<form action="" method="POST">
+    	<form id="form">
 			<div class="up">
 				<div class="name">
 					<div class="label_name"><label for="username">Имя</label></div>
@@ -28,9 +28,6 @@
 				</div>
                 <div class="err">
                     <div id="message">
-                        {% if message %}
-                            <p><h3>{{ message }}</h3></p>
-                        {% endif %}
                     </div>
                 </div>
 			</div>
@@ -39,5 +36,6 @@
     	</form>
         <a id="l" href="{{ url_for('login')}}">Войти</a>
 	</div>
+    <script src="static/js/signup.js"></script>
 </body>
 </html>

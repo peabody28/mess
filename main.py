@@ -10,108 +10,83 @@ socketio = SocketIO(app)
 app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 
 
-@app.route("/signup", methods=['POST', 'GET'])
+@app.route("/signup", methods=['GET'])
 def signup():
+    return render_template('signup.html')
 
-    message = ""
 
-    if request.method == 'POST':
-
+@app.route("/search_pair",  methods=['POST'])
+def search_pair(username=None, email=None):
+    if not username:
         username = request.form.get('username')
         email = request.form.get('email')
-        password = request.form.get('password')
-
-        if username and password and email:
-            search_pair_answer = search_pair(username, email)
-
-            if not(search_pair_answer[0]) and not(search_pair_answer[1]):
-                if "@" in email:
-
-                    if add_user(username, email, password):
-                        session["username"] = username.lower()
-                        f = open("logs.txt", "a")
-                        text = "NEW_USER: " + username.lower() + "   "
-                        f.write(text + (50-len(text))*" "+time.ctime()[4:]+"\n")
-                        f.close()
-                        return redirect(url_for('messenger'))
-                else:
-                    message = "Некорректный email"
-            else:
-                if search_pair_answer[0]:
-                    message = "Имя занято"
-
-                if search_pair_answer[1]:
-                    message = "E-mail занят"
-        else:
-            message = "Введи данные"
-    return render_template('signup.html', message=message)
-
-
-def search_pair(username, email):
-
     answer = []
 
     connection = pymysql.connect("127.0.0.1", "root", "1234", "users_list")
     try:
         with connection.cursor() as cursor:
 
-            if username:
-                sql = "SELECT name FROM users WHERE name=%s"
-                pair_name = cursor.execute(sql, username)
-                answer.append(pair_name)
+            sql = "SELECT name FROM users WHERE name=%s"
+            pair_name = cursor.execute(sql, username)
+            answer.append(pair_name)
 
-            if email:
+            if not email:
+                answer.append(0)
+            else:
                 sql = "SELECT email FROM users WHERE email=%s"
                 pair_email = cursor.execute(sql, email)
                 answer.append(pair_email)
 
     finally:
         connection.close()
-    return answer
+
+    if (not answer[0]) and (not answer[1]):
+        return json.dumps({"status": "OK"})
+    elif answer[0]:
+        return json.dumps({"status": "error", "message": "Имя занято"})
+    else:
+        return json.dumps({"status": "error", "message": "E-mail занят"})
 
 
-def add_user(username, email, passwd):
+@app.route("/add_user", methods=['POST'])
+def add_user():
+    username = request.form.get('username')
+    email = request.form.get('email')
+    passwd = request.form.get('password')
 
     connection = pymysql.connect("127.0.0.1", "root", "1234", "users_list")
     try:
         with connection.cursor() as cursor:
             sql = "INSERT INTO users (id, name, email, passwd) VALUES (NULL, %s, %s, %s)"
-            answer = cursor.execute(sql, (username, email, passwd))
+            cursor.execute(sql, (username, email, passwd))
             connection.commit()
     finally:
         connection.close()
-    return answer
+
+    session["username"] = username.lower()
+    f = open("logs.txt", "a")
+    text = "NEW_USER: " + username.lower() + "   "
+    f.write(text + (50 - len(text)) * " " + time.ctime()[4:] + "\n")
+    f.close()
+    return json.dumps({"status": "OK"})
 
 
-@app.route("/login", methods=['POST', 'GET'])
+@app.route("/login", methods=['GET'])
 def login():
-
-    message = ""
-
-    if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
-
-        if check(username, password):  # если имя и пасс есть в базе
-            session["username"] = username.lower()
-            f = open("logs.txt", "a")
-            text = username + " LOGIN "
-            f.write(text + (50 - len(text)) * " " + time.ctime()[4:] + "\n")
-            f.close()
-            return redirect(url_for('messenger'))
-        else:
-            return render_template('login.html', message="Неверный логин или пороль")
-
-    return render_template('login.html', message=message)
+    return render_template('login.html')
 
 
-@app.route("/exit", methods=['POST', 'GET'])
+@app.route("/exit", methods=['GET'])
 def exit():
     session.pop("username", None)
     return redirect(url_for('login'))
 
 
-def check(username, password):
+@app.route("/check", methods=['POST'])
+def check():
+
+    username = request.form.get('username')
+    password = request.form.get('password')
 
     connection = pymysql.connect("127.0.0.1", "root", "1234", "users_list")
     try:
@@ -120,7 +95,16 @@ def check(username, password):
             answer = cursor.execute(sql, (username, password))
     finally:
         connection.close()
-    return answer
+
+    if answer:
+        session["username"] = username.lower()
+        f = open("logs.txt", "a")
+        text = username + " LOGIN "
+        f.write(text + (50 - len(text)) * " " + time.ctime()[4:] + "\n")
+        f.close()
+        return json.dumps({"status": "OK"})
+    else:
+        return json.dumps({"status": "error", "message": "Неверный логин или пороль"})
 
 
 def get_mes():
@@ -226,8 +210,9 @@ def cn():
     past_name = session["username"]
 
     if new_name:
-        spa = search_pair(new_name, None)
-        if not(spa[0]):
+        spa = search_pair(new_name)
+        print(spa)
+        if spa['status'] == "OK":
             connection = pymysql.connect("127.0.0.1", "root", "1234", "users_list")
             try:
                 with connection.cursor() as cursor:

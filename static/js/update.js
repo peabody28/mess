@@ -1,7 +1,7 @@
 function update(){
     let socket = io.connect('http://127.0.0.1:5000');//запуск прослушки порта
 
-    $('#in_but').on("click", function(event) {
+    $('#in_but').on("click", function() {
         if ($('#inp').val() !== ""){
             socket.emit('add_mess', {data: $('form').serialize() });
             $('#form')[0].reset();//обнулил input

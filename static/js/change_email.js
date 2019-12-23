@@ -6,7 +6,7 @@ function change_email() {
         success: function(response) {
             let json = $.parseJSON(response);
             if (json.status === "OK"){
-                var url = "/userpage";
+                let url = "/userpage";
                 $(location).attr('href',url);
             }
             else{
