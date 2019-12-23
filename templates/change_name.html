@@ -14,25 +14,18 @@
     </div>
 
     <div class="content">
-        <form action="/cn" method="POST" role="form">
+        <form id="form" action="" method="POST" >
             <label for="username">Новое имя</label>&nbsp;&nbsp;
             <input type="text" name="username">
             <br>
             <br>
-            <div id="button"><input type="button" value="Изменить" onclick="change_name();"></div>
+            <div id="button"><input type="button" value="Изменить"></div>
         </form>
         <br>
         <br>
         <div id="message"></div>
     </div>
     <script src="static/js/change_name.js"></script>
-    <script>
-        $('input').keydown(function(e) {
-            if(e.keyCode === 13) {
-                e.preventDefault();//убрал стандартную обработку enter-a
-                change_name()
-            }
-        });
-    </script>
+
 </body>
 </html>

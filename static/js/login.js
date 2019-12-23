@@ -3,7 +3,7 @@ $('#form').submit(function(e){
     $.ajax({
         type: "POST",
         url: "/check",
-        data: $(this).serialize(),
+        data: $('#form').serialize(),
         success: function(response) {
             let json = $.parseJSON(response);
             if (json.status === "OK") {

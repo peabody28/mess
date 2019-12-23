@@ -3,6 +3,7 @@ from flask_socketio import SocketIO, emit
 import pymysql
 import time
 import cryptography
+import json
 
 
 app = Flask(__name__)
@@ -16,26 +17,21 @@ def signup():
 
 
 @app.route("/search_pair",  methods=['POST'])
-def search_pair(username=None, email=None):
-    if not username:
-        username = request.form.get('username')
-        email = request.form.get('email')
+def search_pair():
+    username = request.form.get('username')
+    email = request.form.get('email')
     answer = []
 
     connection = pymysql.connect("127.0.0.1", "root", "1234", "users_list")
     try:
         with connection.cursor() as cursor:
-
             sql = "SELECT name FROM users WHERE name=%s"
             pair_name = cursor.execute(sql, username)
             answer.append(pair_name)
 
-            if not email:
-                answer.append(0)
-            else:
-                sql = "SELECT email FROM users WHERE email=%s"
-                pair_email = cursor.execute(sql, email)
-                answer.append(pair_email)
+            sql = "SELECT email FROM users WHERE email=%s"
+            pair_email = cursor.execute(sql, email)
+            answer.append(pair_email)
 
     finally:
         connection.close()
@@ -64,22 +60,20 @@ def add_user():
         connection.close()
 
     session["username"] = username.lower()
+    session["email"] = email
+    session["password"] = passwd
+
     f = open("logs.txt", "a")
-    text = "NEW_USER: " + username.lower() + "   "
+    text = "NEW_USER: " + session['username'] + "   "
     f.write(text + (50 - len(text)) * " " + time.ctime()[4:] + "\n")
     f.close()
+    print(session)
     return json.dumps({"status": "OK"})
 
 
 @app.route("/login", methods=['GET'])
 def login():
     return render_template('login.html')
-
-
-@app.route("/exit", methods=['GET'])
-def exit():
-    session.pop("username", None)
-    return redirect(url_for('login'))
 
 
 @app.route("/check", methods=['POST'])
@@ -91,20 +85,31 @@ def check():
     connection = pymysql.connect("127.0.0.1", "root", "1234", "users_list")
     try:
         with connection.cursor() as cursor:
-            sql = "SELECT * FROM users WHERE name=%s AND passwd=%s"
+            sql = "SELECT email FROM users WHERE name=%s AND passwd=%s"
             answer = cursor.execute(sql, (username, password))
+            email = cursor.fetchone()
     finally:
         connection.close()
-
     if answer:
         session["username"] = username.lower()
+        session["password"] = password
+        session["email"] = email
+        session.modified = True
+
         f = open("logs.txt", "a")
         text = username + " LOGIN "
         f.write(text + (50 - len(text)) * " " + time.ctime()[4:] + "\n")
         f.close()
+        print(session)
         return json.dumps({"status": "OK"})
     else:
         return json.dumps({"status": "error", "message": "Неверный логин или пороль"})
+
+
+@app.route("/exit", methods=['GET'])
+def exit():
+    session.pop("username", None)
+    return redirect(url_for('login'))
 
 
 def get_mes():
@@ -134,7 +139,8 @@ def get_mes():
                             "time": time[0]})
     finally:
         connection.close()
-        return mes
+
+    return mes
 
 
 @app.route("/")
@@ -176,6 +182,24 @@ def user_page():
     return redirect(url_for('login'))
 
 
+@app.route("/change_name")
+def change_name():
+    print(session)
+    return render_template("change_name.html")
+
+
+@app.route("/change_email")
+def change_email():
+    print(session)
+    return render_template("change_email.html")
+
+
+@app.route("/change_pass")
+def change_pass():
+    print(session)
+    return render_template("change_pass.html")
+
+
 @app.route("/dlt")
 def dlt_user():
 
@@ -194,147 +218,6 @@ def dlt_user():
         f.close()
         session.pop("username", None)
     return redirect(url_for('login'))
-
-
-@app.route("/change_name")
-def change_name():
-
-    if "username" in session:
-        return render_template('change_name.html')
-    return redirect(url_for('login'))
-
-
-@app.route("/cn", methods=['POST', 'GET'])
-def cn():
-    new_name = request.form.get("username")
-    past_name = session["username"]
-
-    if new_name:
-        spa = search_pair(new_name)
-        print(spa)
-        if spa['status'] == "OK":
-            connection = pymysql.connect("127.0.0.1", "root", "1234", "users_list")
-            try:
-                with connection.cursor() as cursor:
-
-                    sql = "SELECT email FROM users WHERE name=%s"
-                    cursor.execute(sql, past_name)
-                    email = cursor.fetchone()
-
-                    sql = "SELECT passwd FROM users WHERE name=%s"
-                    cursor.execute(sql, past_name)
-                    passwd = cursor.fetchall()
-
-                    sql = "DELETE FROM users WHERE name=%s"
-                    cursor.execute(sql, past_name)
-                    connection.commit()
-
-                    sql = "INSERT INTO users (id, name, email, passwd) VALUES (NULL, %s, %s, %s)"
-                    cursor.execute(sql, (new_name, email[0], passwd[0]))
-                    connection.commit()
-                    session.pop("username", None)
-                    session["username"] = new_name.lower()
-
-            finally:
-                connection.close()
-            f = open("logs.txt", "a")
-            text = past_name + " CHANGED THE NAME TO " + new_name
-            f.write(text + (50 - len(text)) * " " + time.ctime()[4:] + "\n")
-            f.close()
-
-            mes = {"mes": text, "name": "system", "time": time.ctime()[10:16]}
-            connection = pymysql.connect("127.0.0.1", "root", "1234", "messages")
-            try:
-                with connection.cursor() as cursor:
-                    sql = "INSERT INTO message (id, tag, message, time) VALUES (NULL, %s, %s, %s)"
-                    cursor.execute(sql, (mes['name'], mes['mes'], mes['time']))
-                    connection.commit()
-
-            finally:
-                connection.close()
-            
-            return json.dumps({"status": "OK", "name": new_name})
-        else:
-            return json.dumps({"status": "error", "message": "Имя занято"})
-    else:
-        return json.dumps({"status": "error", "message": "Введи новое имя"})
-
-
-@app.route("/change_email")
-def change_email():
-
-    if "username" in session:
-        return render_template('change_email.html')
-    return redirect(url_for('login'))
-
-
-@app.route("/ce", methods=['POST', 'GET'])
-def ce():
-
-    new_email = request.form.get('email')
-    if new_email:
-        spa = search_pair(None, new_email)
-        if not (spa[0]):
-
-            connection = pymysql.connect("127.0.0.1", "root", "1234", "users_list")
-            try:
-                with connection.cursor() as cursor:
-
-                    sql = "SELECT passwd FROM users WHERE name=%s"
-                    cursor.execute(sql, session["username"])
-                    passwd = cursor.fetchone()
-
-                    sql = "DELETE FROM users WHERE name=%s"
-                    cursor.execute(sql, session["username"])
-                    connection.commit()
-
-                    sql = "INSERT INTO users (id, name, email, passwd) VALUES (NULL, %s, %s, %s)"
-                    cursor.execute(sql, (session["username"], new_email, passwd[0]))
-                    connection.commit()
-
-            finally:
-                connection.close()
-            return json.dumps({"status": "OK", "eml": new_email})
-        else:
-            return json.dumps({"status": "error", "message": "E-mail занят"})
-    else:
-        return json.dumps({"status": "error", "message": "E-mail не введен"})
-
-
-@app.route("/change_pass")
-def change_pass():
-
-    if "username" in session:
-        return render_template('change_pass.html')
-    return redirect(url_for('login'))
-
-
-@app.route("/cp", methods=['POST', 'GET'])
-def cp():
-
-    new_passwd = request.form['password']
-    if new_passwd:
-        connection = pymysql.connect("127.0.0.1", "root", "1234", "users_list")
-        try:
-            with connection.cursor() as cursor:
-
-                sql = "SELECT email FROM users WHERE name=%s"
-                cursor.execute(sql, session["username"])
-                email = cursor.fetchone()
-
-                sql = "DELETE FROM users WHERE name=%s"
-                cursor.execute(sql, session["username"])
-                connection.commit()
-
-                sql = "INSERT INTO users (id, name, email, passwd) VALUES (NULL, %s, %s, %s)"
-                cursor.execute(sql, (session["username"], email[0], new_passwd))
-                connection.commit()
-
-        finally:
-            connection.close()
-        return json.dumps({"status": "OK", 'pass': new_passwd})
-    else:
-        return json.dumps({"status": "error", 'message': "Введи пароль"})
 
 
 @socketio.on('add_mess')

@@ -1,8 +1,9 @@
-function change_name() {
+$('#form').submit(function(e) {
+    e.preventDefault();
     $.ajax({
         type: "POST",
         url: "/cn",
-        data: $('form').serialize(),//передаю данные формы в функцию cn
+        data: $('#form').serialize(),//передаю данные формы в функцию cn
         success: function(response) {
             let json = $.parseJSON(response);
             if (json.status === "OK"){
@@ -12,10 +13,9 @@ function change_name() {
             else{
                 $('#message').html(json.message)
             }
-
         },
         error: function(error) {
             console.log(error);
         }
     });
-}
+});

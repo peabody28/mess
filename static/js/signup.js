@@ -3,7 +3,7 @@ $('#form').submit(function(e){
     $.ajax({
         type: "POST",
         url: "/search_pair",
-        data: $(this).serialize(),
+        data: $('#form').serialize(),
 
         success: function(response) {
             let json = $.parseJSON(response);
@@ -11,7 +11,7 @@ $('#form').submit(function(e){
                 $.ajax({
                     type: "POST",
                     url: "/add_user",
-                    data: $(this).serialize(),
+                    data: $('#form').serialize(),
                     success: function () {
                         let url = "/messenger";
                         $(location).attr('href',url);
