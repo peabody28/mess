@@ -4,14 +4,14 @@
         <meta charset="UTF-8">
         <link rel="stylesheet" href="static/user_page.css" type="text/css">
         <script type=text/javascript src="static/js/jquery-3.4.1.js"></script>
-        <title>{{ username }}</title>
+        <title>{{ session['username'] }}</title>
     </head>
 
     <body>
         <div class="header">
             <div id="mess"><a id="a_mess" href="{{ url_for('messenger') }}" >MessFree</a></div>
             <div class="login"><h5><a href="{{ url_for('exit')}} ">Выйти</a></h5></div>
-            <div class="usnm"><h3>{{ username }}</h3></div>
+            <div class="usnm"><h3>{{ session['username'] }}</h3></div>
         </div>
 
         <div class="content">
@@ -22,14 +22,14 @@
 
             <div class="change_pass">
                 <a id="change_pass" href="{{ url_for('change_pass') }}">Изменить пароль</a>
-                <span id="password">&emsp;Пароль сейчас: &emsp;{{ password }}</span>
+                <span id="password">&emsp;Пароль сейчас: &emsp;{{ session['password'] }}</span>
             </div>
 
             <br>
 
             <div class="change_email">
                 <a id="change_email" href="{{ url_for('change_email') }}">Изменить e-mail</a>
-                <span id="email">&emsp;E-mail сейчас: &emsp;{{ email }}</span>
+                <span id="email">&emsp;E-mail сейчас: &emsp;{{ session['email'] }}</span>
             </div>
 
             <br>

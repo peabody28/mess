@@ -1,21 +1,18 @@
-$('#form').submit(function(e) {
+$('#form').submit( function(e) {
     e.preventDefault();
     $.ajax({
         type: "POST",
         url: "/cn",
-        data: $('#form').serialize(),//передаю данные формы в функцию cn
-        success: function(response) {
+        data: $('#form').serialize(),
+        success: function (response) {
             let json = $.parseJSON(response);
-            if (json.status === "OK"){
+            if (json.status === "OK") {
                 let url = "/userpage";
-                $(location).attr('href',url);
+                $(location).attr('href', url);
             }
             else{
                 $('#message').html(json.message)
             }
-        },
-        error: function(error) {
-            console.log(error);
         }
     });
 });
