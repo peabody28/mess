@@ -5,11 +5,6 @@
         <title>MessFree</title>
         <script type=text/javascript src="static/js/jquery-3.4.1.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
-        <script>
-            $(document).ready(function () {
-                update();
-            })
-        </script>
     </head>
     <body>
         <div class="header">
@@ -26,9 +21,9 @@
                     <div class="messages">
                         {% for mes in messages %}
                             {% if mes["name"]=="system" %}
-                                &nbsp;&nbsp;<i>{{ mes["name"] }}:&nbsp;&nbsp;&nbsp;&nbsp;{{ mes["mes"] }}&nbsp;&nbsp;&nbsp;&nbsp;</i><span>{{ mes["time"] }}</span><br>
+                                &nbsp;&nbsp;<i>{{ mes["name"] }}:&nbsp;&nbsp;&nbsp;&nbsp;{{ mes["message"] }}&nbsp;&nbsp;&nbsp;&nbsp;</i><span>{{ mes["time"] }}</span><br>
                             {% else %}
-                                {{ mes["name"] }}:&nbsp;&nbsp;&nbsp;&nbsp;{{ mes["mes"] }}&nbsp;&nbsp;&nbsp;&nbsp;<span>{{ mes["time"] }}</span><br>
+                                {{ mes["name"] }}:&nbsp;&nbsp;&nbsp;&nbsp;{{ mes["message"] }}&nbsp;&nbsp;&nbsp;&nbsp;<span>{{ mes["time"] }}</span><br>
                             {% endif %}
                         {% endfor %}
                     </div>
@@ -37,7 +32,7 @@
                     <div class="lol">
                         <form id="form" method="post" role="form" >
                             <input id="inp" type="text" name="text">
-                            <input id="in_but" type="button" value="Отправить">
+                            <button id="in_but">Отправить</button>
                         </form>
                     </div>
                 </div>
@@ -47,9 +42,8 @@
         <div class="footer">
             <div id="by">Разработчик: Горбачевский Максим</div>
         </div>
+        <script type="text/javascript" src="static/js/update.js" charset="utf-8"></script>
         <script type="text/javascript" src="static/js/to_down.js"></script>
-        <script type="text/javascript" src="static/js/update.js"></script>
         <link rel="stylesheet" href="static/messenger.css" type="text/css">
     </body>
-
 </html>

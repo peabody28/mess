@@ -6,16 +6,13 @@ $('#form').submit(function(e){
         data: $('#form').serialize(),
         success: function(response) {
             let json = $.parseJSON(response);
-            if (json.status === "OK") {
-                let url = "/messenger";
-                $(location).attr('href', url);
-            }
-            else{
+            if (json.status === "OK")
+                $(location).attr('href', "/messenger");
+            else
                 $('#message').html(json.message)
-            }
         },
-        error: function () {
-            console.log("error")
+        error: function (error) {
+            console.log(error, "error in login.js")
         }
     });
 });

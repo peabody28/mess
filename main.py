@@ -1,13 +1,36 @@
+
 from flask import Flask, render_template, url_for, request, redirect, json, session, escape
 from flask_socketio import SocketIO, emit
 import pymysql
 import time
 import cryptography
 
-
 app = Flask(__name__)
 socketio = SocketIO(app)
 app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
+
+
+def add_log(code, username, new_name=None):
+    if code == "new_user":
+        f = open("logs.txt", "a")
+        text = "NEW_USER: " + username + "   "
+        f.write(text + (50 - len(text)) * " " + time.ctime()[4:] + "\n")
+        f.close()
+    elif code == "login":
+        f = open("logs.txt", "a")
+        text = username + " LOGIN "
+        f.write(text + (50 - len(text)) * " " + time.ctime()[4:] + "\n")
+        f.close()
+    elif code == "dlt":
+        f = open("logs.txt", "a")
+        text = username + " DELETED "
+        f.write(text + (50 - len(text)) * " " + time.ctime()[4:] + "\n")
+        f.close()
+    else:
+        f = open("logs.txt", "a")
+        text = username + " CHANGE NAME TO " + new_name
+        f.write(text + (50 - len(text)) * " " + time.ctime()[4:] + "\n")
+        f.close()
 
 
 @app.route("/signup", methods=['GET'])
@@ -15,10 +38,11 @@ def signup():
     return render_template('signup.html')
 
 
-@app.route("/search_pair",  methods=['POST'])
+@app.route("/search_pair", methods=['POST'])
 def search_pair():
     username = request.form.get('username')
     email = request.form.get('email')
+
     answer = []
 
     connection = pymysql.connect("127.0.0.1", "root", "1234", "users_list")
@@ -45,7 +69,6 @@ def search_pair():
 
 @app.route("/add_user", methods=['POST'])
 def add_user():
-
     username = request.form.get('username')
     email = request.form.get('email')
     password = request.form.get('password')
@@ -63,10 +86,8 @@ def add_user():
     session["email"] = email
     session["password"] = password
 
-    f = open("logs.txt", "a")
-    text = "NEW_USER: " + session['username'] + "   "
-    f.write(text + (50 - len(text)) * " " + time.ctime()[4:] + "\n")
-    f.close()
+    add_log("new_user", session['username'])
+
     return json.dumps({"status": "OK"})
 
 
@@ -77,7 +98,6 @@ def login():
 
 @app.route("/check", methods=['POST'])
 def check():
-
     username = request.form.get('username')
     password = request.form.get('password')
 
@@ -95,10 +115,8 @@ def check():
         session["email"] = email[0]
         session.modified = True
 
-        f = open("logs.txt", "a")
-        text = username + " LOGIN "
-        f.write(text + (50 - len(text)) * " " + time.ctime()[4:] + "\n")
-        f.close()
+        add_log("login", session['username'])
+
         return json.dumps({"status": "OK"})
     else:
         return json.dumps({"status": "error", "message": "Неверный логин или пороль"})
@@ -107,11 +125,13 @@ def check():
 @app.route("/exit", methods=['GET'])
 def exit():
     session.pop("username", None)
+    session.pop("email", None)
+    session.pop("password", None)
     return redirect(url_for('login'))
 
 
-def get_mes():
-    mes = []
+def get_messages():
+    messages = []
     connection = pymysql.connect("127.0.0.1", "root", "1234", "messages")
     try:
         with connection:
@@ -124,31 +144,29 @@ def get_mes():
                 cursor.execute(sql, i + 1)
                 answer = cursor.fetchall()[0]
 
-                mes.append({"name": answer[2],
-                            "mes":  answer[1],
-                            "time": answer[3]})
+                messages.append({"message": answer[1],
+                                 "name": answer[2],
+                                 "time": answer[3]})
     finally:
         connection.close()
-    return mes
+    return messages
 
 
-@app.route("/")
+@app.route("/", methods=['GET'])
 def main():
-
     if "username" in session:
-        return render_template("messenger.html", messages=get_mes())
+        return render_template("messenger.html", messages=get_messages())
     return redirect(url_for('login'))
 
 
-@app.route("/messenger")
+@app.route("/messenger", methods=['GET'])
 def messenger():
-
     if "username" in session:
-        return render_template('messenger.html', messages=get_mes())
+        return render_template('messenger.html', messages=get_messages())
     return redirect(url_for('login'))
 
 
-@app.route("/userpage")
+@app.route("/userpage", methods=['GET'])
 def user_page():
     if "username" in session:
         return render_template("user_page.html", session=session)
@@ -162,7 +180,7 @@ def change_name():
 
 @app.route("/cn", methods=['POST'])
 def cn():
-    new_name = request.form.get("username")
+    new_name = request.form.get("username").lower()
     if new_name:
         connection = pymysql.connect("127.0.0.1", "root", "1234", "users_list")
         try:
@@ -177,8 +195,11 @@ def cn():
                     cursor.execute(sql, (new_name, session['email']))
                     connection.commit()
 
+                    add_log("rename", session['username'], new_name)
+
                     session["username"] = new_name
                     session.modified = True
+
                     return json.dumps({"status": "OK"})
         finally:
             connection.close()
@@ -186,7 +207,7 @@ def cn():
         return json.dumps({"status": "error", "message": "Заполните поле"})
 
 
-@app.route("/change_email")
+@app.route("/change_email", methods=['GET'])
 def change_email():
     return render_template("change_email.html")
 
@@ -217,7 +238,7 @@ def ce():
         return json.dumps({"status": "error", "message": "Заполните поле"})
 
 
-@app.route("/change_pass")
+@app.route("/change_pass", methods=['GET'])
 def change_pass():
     return render_template("change_pass.html")
 
@@ -244,9 +265,8 @@ def cp():
         return json.dumps({"status": "error", "message": "Заполните поле"})
 
 
-@app.route("/dlt")
+@app.route("/dlt", methods=['GET'])
 def dlt_user():
-
     if "username" in session:
         connection = pymysql.connect("127.0.0.1", "root", "1234", "users_list")
         try:
@@ -256,27 +276,25 @@ def dlt_user():
                 connection.commit()
         finally:
             connection.close()
-        f = open("logs.txt", "a")
-        text = session["username"] + " DELETED "
-        f.write(text + (50 - len(text)) * " " + time.ctime()[4:] + "\n")
-        f.close()
+
+        add_log("dlt", session['username'])
+
         session.pop("username", None)
     return redirect(url_for('login'))
 
 
-@socketio.on('add_mess')
-def value_changed(m):
-    mes = {"mes": m['data'][5:], "name": session['username'], "time": time.ctime()[10:16]}
+@socketio.on('add_message')
+def add_message(m):
+    message = {"message": m['data'], "name": session['username'], "time": time.ctime()[10:16]}
     connection = pymysql.connect("127.0.0.1", "root", "1234", "messages")
     try:
         with connection.cursor() as cursor:
             sql = "INSERT INTO message (id, tag, message, time) VALUES (NULL, %s, %s, %s)"
-            cursor.execute(sql, (mes['name'], mes['mes'], mes['time']))
+            cursor.execute(sql, (message['name'], message['message'], message['time']))
             connection.commit()
-
     finally:
         connection.close()
-    emit('update', mes, broadcast=True)
+    emit('update', message, broadcast=True)
 
 
 if __name__ == "__main__":
