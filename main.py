@@ -9,6 +9,8 @@ app = Flask(__name__)
 socketio = SocketIO(app)
 app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 
+users = []
+
 
 def add_log(code, username, new_name=None):
     if code == "new_user":
@@ -85,7 +87,7 @@ def add_user():
     session["username"] = username.lower()
     session["email"] = email
     session["password"] = password
-
+    users.append(session["username"])
     add_log("new_user", session['username'])
 
     return json.dumps({"status": "OK"})
@@ -101,6 +103,9 @@ def check():
     username = request.form.get('username')
     password = request.form.get('password')
 
+    if username in users:
+        return json.dumps({"status": "error", "message": "Пользователь уже в сети"})
+
     connection = pymysql.connect("127.0.0.1", "root", "1234", "users_list")
     try:
         with connection.cursor() as cursor:
@@ -114,7 +119,7 @@ def check():
         session["password"] = password
         session["email"] = email[0]
         session.modified = True
-
+        users.append(session["username"])
         add_log("login", session['username'])
 
         return json.dumps({"status": "OK"})
@@ -124,6 +129,7 @@ def check():
 
 @app.route("/exit", methods=['GET'])
 def exit():
+    users.pop(users.index(session["username"]))
     session.pop("username", None)
     session.pop("email", None)
     session.pop("password", None)
@@ -194,13 +200,14 @@ def cn():
                     sql = "UPDATE users SET name=%s WHERE email=%s"
                     cursor.execute(sql, (new_name, session['email']))
                     connection.commit()
-
+                    past_name = session['username']
                     add_log("rename", session['username'], new_name)
-
+                    users.pop(users.index(session["username"]))
                     session["username"] = new_name
+                    users.append(session["username"])
                     session.modified = True
 
-                    return json.dumps({"status": "OK"})
+                    return json.dumps({"status": "OK", "past_name": past_name, "new_name": session['username']})
         finally:
             connection.close()
     else:
@@ -285,7 +292,12 @@ def dlt_user():
 
 @socketio.on('add_message')
 def add_message(m):
-    message = {"message": m['data'], "name": session['username'], "time": time.ctime()[10:16]}
+
+    if m['code'] == 1:
+        message = {"message": m['data'], "name": "system", "time": time.ctime()[10:16]}
+    else:
+        message = {"message": m['data'], "name": session['username'], "time": time.ctime()[10:16]}
+
     connection = pymysql.connect("127.0.0.1", "root", "1234", "messages")
     try:
         with connection.cursor() as cursor:

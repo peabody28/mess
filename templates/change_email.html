@@ -14,25 +14,17 @@
     </div>
 
     <div class="content">
-        <form action="/ce" method="POST" role="form">
+        <form id="form">
             <label for="email">Новый e-mail</label>&nbsp;&nbsp;
             <input type="text" name="email">
             <br>
             <br>
-            <div id="button"><input type="button" value="Изменить" onclick="change_email();"></div>
+            <div id="button"><button id="bt">Изменить</button></div>
         </form>
         <br>
         <br>
         <div id="message"></div>
     </div>
     <script src="static/js/change_email.js"></script>
-    <script>
-        $('input').keydown(function(e) {
-            if(e.keyCode === 13) {
-                e.preventDefault();//убрал стандартную обработку enter-a
-                change_email()
-            }
-        });
-    </script>
 </body>
 </html>

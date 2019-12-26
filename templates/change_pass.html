@@ -14,25 +14,17 @@
     </div>
 
     <div class="content">
-    	<form action="/cp" method="POST" role="form">
+    	<form id="form">
             <label for="password">Пароль</label>&nbsp;&nbsp;
             <input type="text" name="password">
             <br>
             <br>
-            <div id="button"><input type="button" value="Изменить" onclick="change_pass();"></div>
+            <div id="button"><button id="bt">Изменить</button></div>
         </form>
         <br/>
         <br/>
         <div id="message"></div>
     </div>
     <script src="static/js/change_pass.js"></script>
-    <script>
-        $('input').keydown(function(e) {
-            if(e.keyCode === 13) {
-                e.preventDefault();//убрал стандартную обработку enter-a
-                change_pass()
-            }
-        });
-    </script>
 </body>
 </html>

@@ -2,7 +2,7 @@ let socket = io.connect('http://127.0.0.1:5000');//запуск прослушк
 
 function send() {
     if ($('#inp').val() !== ""){
-        socket.emit('add_message', {data: $('#inp').val() });
+        socket.emit('add_message', {data: $('#inp').val(), code: 0 });
         $('#form')[0].reset();//обнулил input
         $('#inp').focus();
         $('#err_message').html("")//убираю сообщение если оно есть
@@ -16,14 +16,7 @@ socket.on('update', function(msg) {
     $('.messages').append(message);
 });
 
-$('#in_but').click(function (e){
+$('#form').submit(function(e){
     e.preventDefault();
     send()
-});
-
-$('#form').keydown(function(e) {
-    if(e.keyCode === 13) {
-        e.preventDefault();//убрал стандартную обработку enter-a
-        send();
-    }
 });

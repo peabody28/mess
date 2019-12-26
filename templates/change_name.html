@@ -5,6 +5,7 @@
     <title>change my name</title>
     <link rel="stylesheet" href="static/change_name.css" type="text/css">
     <script type=text/javascript src="/static/js/jquery-3.4.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
 </head>
 <body>
     <div class="header">
@@ -14,7 +15,7 @@
     </div>
 
     <div class="content">
-       	<form id="form" action="" method="POST">
+       	<form id="form">
             <label for="username">Новое имя</label>&nbsp;&nbsp;
             <input id="inp" type="text" name="username">
             <br>
@@ -26,6 +27,5 @@
         <div id="message"></div>
     </div>
     <script src="static/js/change_name.js"></script>
-
 </body>
 </html>

@@ -1,41 +1,37 @@
 <!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="static/signup.css" type="text/css">
-    <script type=text/javascript src="/static/js/jquery-3.4.1.js"></script>
-    <title>Зарегистрироваться</title>
-</head>
-<body>
-    <div class="form_signup">
-    	<form id="form">
-			<div class="up">
-				<div class="name">
-					<div class="label_name"><label for="username">Имя</label></div>
-					<div class="input_name"><input type="text" name="username"></div>
-				</div>
-				<br>
-
-				<div class="email">
-					<div class="label_email"><label for="username">E-mail</label></div>
-					<div class="input_email"><input type="text" name="email"></div>
-				</div>
-				<br>
-
-				<div class="pass">
-					<div class="label_pass"><label for="username">Пароль</label></div>
-					<div class="input_pass"><input type="password" name="password"></div>
-				</div>
-                <div class="err">
-                    <div id="message">
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="static/signup.css" type="text/css">
+        <script type=text/javascript src="/static/js/jquery-3.4.1.js"></script>
+        <title>Зарегистрироваться</title>
+    </head>
+    <body>
+        <div class="form_signup">
+            <form id="form">
+                <div class="up">
+                    <div class="name">
+                        <div class="label_name"><label for="username">Имя</label></div>
+                        <div class="input_name"><input type="text" name="username"></div>
+                    </div>
+                    <br>
+                    <div class="email">
+                        <div class="label_email"><label for="username">E-mail</label></div>
+                        <div class="input_email"><input type="text" name="email"></div>
+                    </div>
+                    <br>
+                    <div class="pass">
+                        <div class="label_pass"><label for="username">Пароль</label></div>
+                        <div class="input_pass"><input type="password" name="password"></div>
+                    </div>
+                    <div class="err">
+                        <div id="message"></div>
                     </div>
                 </div>
-			</div>
-	    	<div id="button"><button id="bt">Зарегистрироваться</button></div>
-
-    	</form>
-        <a id="l" href="{{ url_for('login')}}">Войти</a>
-	</div>
-    <script src="static/js/signup.js"></script>
-</body>
+                <div id="button"><button id="bt">Зарегистрироваться</button></div>
+            </form>
+            <a id="l" href="{{ url_for('login')}}">Войти</a>
+        </div>
+        <script src="static/js/signup.js"></script>
+    </body>
 </html>
